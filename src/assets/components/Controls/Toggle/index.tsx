@@ -11,8 +11,8 @@ export function Toggle({ onToggle }) {
 				onToggle(checked)
 			}} />
 		<label htmlFor="checkbox" className={styles.checkboxLabel}>
-			<span className={`${styles.emoji} ${styles.left}`}>❌</span>
-			<span className={`${styles.emoji} ${styles.right}`}>✔️</span>
+			<span className={`${styles.emoji} ${styles.left}`}>✔️</span>
+			<span className={`${styles.emoji} ${styles.right}`}>❌</span>
 			<span className={styles.ball}></span>
 		</label>
 	</div>
