@@ -73,6 +73,10 @@
 	font-size: 0.8rem;
 }
 
+.event:hover {
+	cursor: move;
+}
+
 /** global to avoid transform on dark mode class */
 :global .dark {
 	.dayInner {
