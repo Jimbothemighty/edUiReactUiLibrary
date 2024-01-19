@@ -1,5 +1,3 @@
-// PopupDialog.tsx
-import { useState, useEffect } from 'react'
 import styles from './PopupDialog.module.css'
 import * as React from 'react'
 
@@ -9,26 +7,16 @@ interface PopupDialogProps {
 }
 
 const PopupDialog: React.FC<PopupDialogProps> = ({ isOpen, onClose }) => {
-	const [answer, setAnswer] = useState<boolean | null>(null)
-
-	useEffect(() => {
-		if (!isOpen) {
-			setAnswer(null) // Reset answer when the dialog is closed
-		}
-	}, [isOpen])
-
 	const handleConfirm = () => {
-		setAnswer(true)
-		handleClose()
+		handleClose(true)
 	}
 
 	const handleCancel = () => {
-		setAnswer(false)
-		handleClose()
+		handleClose(false)
 	}
 
-	const handleClose = () => {
-		onClose(Boolean(answer))
+	const handleClose = (ans : boolean) => {
+		onClose(Boolean(ans))
 	}
 
 	return (
@@ -38,7 +26,6 @@ const PopupDialog: React.FC<PopupDialogProps> = ({ isOpen, onClose }) => {
 					<p>Are you sure you want to proceed?</p>
 					<button onClick={handleConfirm}>Yes</button>
 					<button onClick={handleCancel}>No</button>
-					<button onClick={handleClose}>Close</button>
 				</div>
 			</div>
 		)

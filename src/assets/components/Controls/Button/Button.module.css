@@ -9,7 +9,7 @@
 }
 
 .customButton:hover {
-	background-color: #2980b9;
+	opacity: 0.9;
 }
 
 .customButton:disabled {

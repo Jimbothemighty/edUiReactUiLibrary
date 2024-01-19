@@ -24,6 +24,7 @@ function Calendar({ eventsArr = null } : calendarPropsType) {
 			<div className={styles.header}>
 				<div>{format(currentMonth, dateFormat)}</div>
 				<div className={styles.buttonContainer}>
+					<Button onClick={nowMonth} label={`Now`}/>
 					<Button onClick={prevMonth} label={`Prev`}/>
 					<Button onClick={nextMonth} label={`Next`}/>
 				</div>
@@ -95,6 +96,10 @@ function Calendar({ eventsArr = null } : calendarPropsType) {
 				{a.days}
 			</div>
 		})}</div>
+	}
+
+	const nowMonth = () => {
+		setCurrentMonth(new Date())
 	}
 
 	const nextMonth = () => {

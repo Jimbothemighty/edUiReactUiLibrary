@@ -122,7 +122,7 @@ function PopupTest() {
 	const [isPopupOpen, setIsPopupOpen] = useState(false)
 
 	const handlePopupClose = (answer: boolean) => {
-		console.log(`User chose:`, answer ? `Yes` : `No`)
+		alert(`User chose: ${answer ? `Yes` : `No`}`)
 		setIsPopupOpen(false)
 	}
 
