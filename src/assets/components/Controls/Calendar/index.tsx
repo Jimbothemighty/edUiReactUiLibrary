@@ -94,7 +94,7 @@ const RenderHeader = ({ currentMonth, nowMonth, prevMonth, nextMonth }) => {
 	const dateFormat = `MMMM yyyy`
 	return (
 		<div className={styles.header}>
-			<div>{format(currentMonth, dateFormat)}</div>
+			<h2>{format(currentMonth, dateFormat)}</h2>
 			<div className={styles.buttonContainer}>
 				<Button onClick={nowMonth} label={`Now`}/>
 				<Button onClick={prevMonth} label={`Prev`}/>

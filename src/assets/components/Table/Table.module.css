@@ -15,3 +15,9 @@ th {
 	background-color: var(--theme-bg-colour);
 	color: var(--theme-txt-colour);
 }
+
+th div {
+	display: flex;
+	align-items: center;
+	gap: 5px;
+}

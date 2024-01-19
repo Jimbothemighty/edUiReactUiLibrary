@@ -1,4 +1,3 @@
-// Tabs.tsx
 import { useState, ReactNode, ReactElement } from 'react'
 import styles from './Tabs.module.css'
 import * as React from 'react'
