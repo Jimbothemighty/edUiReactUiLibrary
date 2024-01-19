@@ -41,7 +41,7 @@
 .toggleContainer .emoji {
 	font-family: 'Noto Color Emoji', sans-serif;
 	display: block;
-	font-size: 0.9em;
+	font-size: 0.9rem;
 	position: relative;
 	top: 0px
 }
