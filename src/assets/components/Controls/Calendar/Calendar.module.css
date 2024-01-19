@@ -41,8 +41,8 @@
 .day {
 	width: calc(100% / 7);
 	text-align: left;
-	min-height: 60px;
-	max-height: 60px;
+	min-height: 80px;
+	max-height: 80px;
 	padding: 2px;
 	box-sizing: border-box;
 	overflow-y: hidden;

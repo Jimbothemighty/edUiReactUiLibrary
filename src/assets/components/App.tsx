@@ -17,6 +17,7 @@ import { AppDispatch, RootState } from "~/redux/store"
 import { rootThemeClass, rootThemeColour } from "~/assets/js/setUserPreferences"
 import { setThemeColour, themeColor } from '~/redux/userPreferences'
 import Calendar, { eventType } from "~/assets/components/Controls/Calendar"
+import { addDays } from "date-fns"
 
 export function App() {
 	const theme = useSelector((state: RootState) => state.userPreferences.theme)
@@ -91,6 +92,7 @@ function ThemeColours() {
 					backgroundColor: themeColour.bg,
 					width: `300px`,
 					height: `50px`,
+					cursor: `pointer`,
 				}}><span style={{
 						lineHeight: `2`,
 						padding: `5px`,
@@ -234,13 +236,25 @@ function CalendarTest() {
 			id: 1,
 			from: new Date(),
 			to: new Date(),
-			label: `pasta`,
+			label: `Event 1`,
 		},
 		{
 			id: 2,
 			from: new Date(),
 			to: new Date(),
-			label: `pasta2`,
+			label: `Event 2`,
+		},
+		{
+			id: 3,
+			from: addDays(new Date(), 5),
+			to: addDays(new Date(), 5),
+			label: `Event 3`,
+		},
+		{
+			id: 4,
+			from: addDays(new Date(), -5),
+			to: addDays(new Date(), -5),
+			label: `Event 4`,
 		},
 	]
 
