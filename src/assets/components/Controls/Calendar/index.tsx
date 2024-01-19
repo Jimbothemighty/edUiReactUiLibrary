@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, ReactNode } from 'react'
 import styles from './Calendar.module.css'
 import { format, startOfWeek, addDays, startOfMonth, endOfMonth, endOfWeek, addMonths, subMonths } from 'date-fns'
 import Button from '~/assets/components/Controls/Button'
@@ -12,6 +12,11 @@ export type eventType = {
 
 type calendarPropsType = {
 	eventsArr : eventType[]
+}
+
+type calendarDaysType = {
+	day : Date,
+	days : ReactNode
 }
 
 function Calendar({ eventsArr = null } : calendarPropsType) {
@@ -55,12 +60,12 @@ function Calendar({ eventsArr = null } : calendarPropsType) {
 		const startDate : Date = startOfWeek(monthStart)
 		const endDate : Date = endOfWeek(monthEnd)
 
-		const dateFormat = `d`
-		const rows = []
+		const dateFormat : string = `d`
+		const rows : calendarDaysType[] = []
 
-		let days = []
-		let day = startDate
-		let formattedDate = ``
+		let days : ReactNode[] = []
+		let day : Date = startDate
+		let formattedDate : string = ``
 
 		while (day <= endDate) {
 			for (let i = 0; i < 7; i++) {
