@@ -17,6 +17,7 @@ Supports:
 - Tabs
 - Popup
 - Context Menu
+- Calendar
 
 # Tools
 - React

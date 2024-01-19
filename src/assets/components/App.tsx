@@ -34,9 +34,6 @@ export function App() {
 		<NavBar />
 		<div style={{ padding: `10px` }}>
 			<Tabs>
-				<Tab label="Calendar">
-					<CalendarTest/>
-				</Tab>
 				<Tab label="Theme">
 					<h3>Set Light / Dark Theme</h3>
 					<LightDarkToggle/>
@@ -57,6 +54,9 @@ export function App() {
 				</Tab>
 				<Tab label="Tabs">
 					<TabsTest/>
+				</Tab>
+				<Tab label="Calendar">
+					<CalendarTest/>
 				</Tab>
 			</Tabs>
 		</div>
