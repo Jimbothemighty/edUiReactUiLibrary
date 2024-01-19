@@ -258,5 +258,8 @@ function CalendarTest() {
 		},
 	]
 
-	return <Calendar eventsArr={events}/>
+	return 		<>
+		<h1>React Calendar test</h1>
+		<Calendar eventsArr={events}/>
+	</>
 }
