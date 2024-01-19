@@ -34,7 +34,9 @@ const Tabs: React.FC<TabsProps> = ({ children }) => {
 					</div>
 				))}
 			</div>
-			<div className={styles.tabContent}>{children[activeIndex]}</div>
+			{children.map((child, index) => {
+				return <div key={index} className={styles.tabContent} style={{ display: index === activeIndex ? `block` : `none` }}>{child}</div> // children[activeIndex]
+			})}
 		</div>
 	)
 }
