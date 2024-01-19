@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "~/redux/store"
 import { rootThemeClass, rootThemeColour } from "~/assets/js/setUserPreferences"
 import { setThemeColour, themeColor } from '~/redux/userPreferences'
+import Calendar, { eventType } from "~/assets/components/Controls/Calendar"
 
 export function App() {
 	const theme = useSelector((state: RootState) => state.userPreferences.theme)
@@ -33,6 +34,9 @@ export function App() {
 		<NavBar />
 		<div style={{ padding: `10px` }}>
 			<Tabs>
+				<Tab label="Calendar">
+					<CalendarTest/>
+				</Tab>
 				<Tab label="Theme">
 					<h3>Set Light / Dark Theme</h3>
 					<LightDarkToggle/>
@@ -129,7 +133,7 @@ function PopupTest() {
 	return (
 		<div>
 			<h1>React Popup Dialog Example</h1>
-			<button onClick={handleOpenPopup}>Open Popup</button>
+			<Button onClick={handleOpenPopup} label={`Open Popup`}/>
 			<PopupDialog isOpen={isPopupOpen} onClose={handlePopupClose} />
 		</div>
 	)
@@ -216,4 +220,29 @@ function ControlsTest() {
 		<br/>
 		<br/>
 	</>
+}
+
+function CalendarTest() {
+	React.useEffect(() => {
+		console.log(`mount`)
+
+		return console.log(`unmount`)
+	}, [])
+
+	const events : eventType[] = [
+		{
+			id: 1,
+			from: new Date(),
+			to: new Date(),
+			label: `pasta`,
+		},
+		{
+			id: 2,
+			from: new Date(),
+			to: new Date(),
+			label: `pasta2`,
+		},
+	]
+
+	return <Calendar eventsArr={events}/>
 }
