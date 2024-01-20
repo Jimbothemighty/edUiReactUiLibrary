@@ -2,6 +2,8 @@
 	border: 1px solid #ddd;
 	padding: 10px;
 	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
 }
 
 .header {
@@ -67,8 +69,8 @@
 
 .event {
 	background-color: var(--theme-bg-colour);
+	color: var(--theme-txt-colour);
 	border-radius: var(--theme-border-radius);
-	color: white;
 	padding: 2px;
 	font-size: 0.8rem;
 }
@@ -108,6 +110,10 @@
 /** global to avoid transform on dark mode class */
 :global .dark {
 	.dayInner {
+		background-color: #00000022;
+	}
+
+	.dayColumn {
 		background-color: #00000022;
 	}
 }

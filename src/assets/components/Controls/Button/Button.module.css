@@ -1,6 +1,6 @@
 .customButton {
 	background-color: var(--theme-bg-colour);
-	color: #fff;
+	color: var(--theme-txt-colour);
 	padding: 10px 20px;
 	border: none;
 	border-radius: var(--theme-border-radius);

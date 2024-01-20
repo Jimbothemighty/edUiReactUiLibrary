@@ -17,7 +17,7 @@
 	display: inline-block;
 	padding: 10px;
 	background-color: var(--theme-bg-colour);
-	color: #fff;
+	color: var(--theme-txt-colour);
 	border-radius: var(--theme-border-radius);
 	cursor: pointer;
   }

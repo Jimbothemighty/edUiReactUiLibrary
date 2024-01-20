@@ -41,7 +41,7 @@ Input.module.css
 	display: block;
 	text-align: center;
 	font-size: 1.5em;
-	color: #fff;
+	color: var(--theme-txt-colour);
 	position: absolute;
 	top: 40%;
 	left: 50%;

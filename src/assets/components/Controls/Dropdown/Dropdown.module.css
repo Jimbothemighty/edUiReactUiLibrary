@@ -44,6 +44,7 @@ li {
 	cursor: pointer;
 	&:hover {
 		background-color: var(--theme-bg-colour);
+		color: var(--theme-txt-colour);
 	}
 }
 
