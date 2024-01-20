@@ -1,9 +1,26 @@
 import { useState, ReactNode } from 'react'
 import styles from './Calendar.module.css'
-import { format, startOfWeek, addDays, startOfMonth, endOfMonth, endOfWeek, addMonths, subMonths } from 'date-fns'
+import { format, startOfWeek, addDays, startOfMonth, endOfMonth, endOfWeek, addMonths, subMonths, addWeeks, subWeeks } from 'date-fns'
 import { useDrag, useDrop, DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import Button from '~/assets/components/Controls/Button'
+
+function getPeriodStartAndEnd(currentDate, viewMode) {
+	const monthStart : Date = startOfMonth(currentDate)
+	let startDate: Date
+	let endDate: Date
+
+	if (viewMode === `week`) {
+		startDate = startOfWeek(currentDate)
+		endDate = endOfWeek(currentDate)
+	} else {
+		// Month view logic
+		startDate = startOfWeek(monthStart)
+		endDate = endOfWeek(endOfMonth(monthStart))
+	}
+
+	return { startDate, endDate }
+}
 
 export type eventType = {
 	id : number,
@@ -14,11 +31,6 @@ export type eventType = {
 
 type calendarPropsType = {
 	eventsArr : eventType[]
-}
-
-type calendarDaysType = {
-	day : Date,
-	days : ReactNode
 }
 
 const Day = ({ day, events, moveEvent }) => {
@@ -90,21 +102,25 @@ const DraggableEvent = ({ event, moveEvent } : draggableEventType) => {
 	)
 }
 
-const RenderHeader = ({ currentMonth, nowMonth, prevMonth, nextMonth }) => {
-	const dateFormat = `MMMM yyyy`
+const RenderHeader = ({ currentDate, nowPeriod, nextPeriod, prevPeriod, toggleViewMode, viewMode }) => {
+	let { startDate, endDate } = getPeriodStartAndEnd(currentDate, viewMode)
+	const dateFormat = viewMode === `month` ? `MMMM yyyy` : `MMMM yyyy`
+	const dateLabel = () => viewMode === `month` ? format(currentDate, dateFormat) : `${format(startDate, `do`)} to ${format(endDate, `do`)} ${format(currentDate, dateFormat)}`
+
 	return (
 		<div className={styles.header}>
-			<h2>{format(currentMonth, dateFormat)}</h2>
+			<h2>{dateLabel()}</h2>
 			<div className={styles.buttonContainer}>
-				<Button onClick={nowMonth} label={`Now`}/>
-				<Button onClick={prevMonth} label={`Prev`}/>
-				<Button onClick={nextMonth} label={`Next`}/>
+				<Button onClick={nowPeriod} label={`Now`}/>
+				<Button onClick={prevPeriod} label="Prev" />
+				<Button onClick={nextPeriod} label="Next" />
+				<Button onClick={toggleViewMode} label={viewMode === `month` ? `Week View` : `Month View`} />
 			</div>
 		</div>
 	)
 }
 
-const RenderDays = ({ currentMonth }) => {
+const RenderDays = ({ currentMonth, viewMode }) => {
 	const dateFormat = `E`
 	const days = []
 
@@ -112,32 +128,37 @@ const RenderDays = ({ currentMonth }) => {
 
 	for (let i = 0; i < 7; i++) {
 		days.push(
-			<div key={i} className={styles.dayOfWeek}>
+			<div key={i} className={viewMode === `month` ? styles.dayOfWeek : styles.dayOfWeekColumn}>
 				{format(addDays(startDate, i), dateFormat)}
 			</div>
 		)
 	}
 
-	return <div className={styles.weekdays}>{days}</div>
+	return <div className={viewMode === `month` ? styles.weekdays : `${styles.weekView} ${styles.bold}`}>
+		{viewMode === `week` && <div className={styles.weekView}></div>}
+		{days}
+	</div>
 }
 
 type renderCellsType = {
-	currentMonth : Date,
-	eventsArr : eventType[]
+	currentDate : Date,
+	eventsArr : eventType[],
+	viewMode : `month` | `week`
 }
 
-const RenderCells = ({ currentMonth, eventsArr } : renderCellsType) => {
+type calendarDaysType = {
+	dayOfMonth : Date,
+	days : eventType[]
+}
+
+const RenderCells = ({ currentDate, eventsArr, viewMode } : renderCellsType) => {
 	const [events, setEvents] = useState<eventType[]>(eventsArr)
 
-	const monthStart : Date = startOfMonth(currentMonth)
-	const monthEnd : Date = endOfMonth(monthStart)
-	const startDate : Date = startOfWeek(monthStart)
-	const endDate : Date = endOfWeek(monthEnd)
+	let { startDate, endDate } = getPeriodStartAndEnd(currentDate, viewMode)
 
-	const rows : calendarDaysType[] = []
+	const rows : calendarDaysType[][] = []
 
-	let days : ReactNode[] = []
-	let day : Date = startDate
+	let dayOfMonth : Date = startDate
 
 	const moveEvent = (event : eventType, newDay : Date) => {
 		event.to = newDay
@@ -145,48 +166,129 @@ const RenderCells = ({ currentMonth, eventsArr } : renderCellsType) => {
 		setEvents([...events])
 	}
 
-	while (day <= endDate) {
+	while (dayOfMonth <= endDate) {
+		let thisRow : calendarDaysType[] = []
+
 		for (let i = 0; i < 7; i++) {
-			days.push(
-				<Day key={day.toString()} day={day} events={events.filter((a) => format(a.from, `ddMyyyy`) === format(day, `ddMyyyy`))} moveEvent={moveEvent} />
-			)
-			day = addDays(day, 1)
+			dayOfMonth = addDays(dayOfMonth, 1)
+
+			// days.push(events.filter((a) => format(a.from, `ddMyyyy`) === format(dayOfMonth, `ddMyyyy`)))
+
+			thisRow.push({
+				dayOfMonth,
+				days: events.filter((a) => format(a.from, `ddMyyyy`) === format(dayOfMonth, `ddMyyyy`)),
+			})
 		}
-		rows.push({
-			day,
-			days,
-		})
-		days = []
+
+		rows.push(thisRow)
+		thisRow = []
+
+		if (viewMode === `week`) break
 	}
 
-	return <div className={styles.daysContainer}>{rows.map((a) => {
-		return <div key={a.day.toString()} className={styles.days} style={{ minHeight: `${100 / rows.length}%`, maxHeight: `${100 / rows.length}%` }}>
-			{a.days}
+	if (viewMode === `week`) {
+		return <WeekView rows={rows} currentDate={currentDate}/>
+	} else {
+		return <MonthView rows={rows} eventsArr={eventsArr} currentDate={currentDate} moveEvent={moveEvent}/>
+	}
+}
+
+type weekViewType = {
+	rows : calendarDaysType[][],
+	currentDate : Date
+}
+
+function WeekView({ rows, currentDate } : weekViewType) {
+	const daysOfWeek = []
+	for (let i = 0; i < 7; i++) {
+		daysOfWeek.push(addDays(startOfWeek(currentDate), i))
+	}
+
+	const hoursOfDay = Array.from({ length: 16 }, (_, i) => 7 + i) // From 7 AM to 10 PM
+
+	return <div className={styles.weekView}>
+		<div className={styles.timeColumn}>
+			{hoursOfDay.map((hour) => (
+				<div key={hour} className={styles.hourSlot}>
+					{hour}:00
+				</div>
+			))}
 		</div>
-	})}</div>
+		{daysOfWeek.map((day) => (
+			<div key={day} className={styles.dayColumn}>
+				{hoursOfDay.map((hour) => {
+					// const eventsInHour = rows.filter(
+					// 	(e) => isSameDay(e.from, day) && getHours(e.from) === hour
+					// )
+					return (
+						<div key={hour} className={styles.hourSlot}>
+							{/* Render eventsInHour here */}
+						</div>
+					)
+				})}
+			</div>
+		))}
+	</div>
+}
+
+type monthViewType = {
+	rows : calendarDaysType[][],
+	eventsArr: eventType[],
+	currentDate : Date,
+	moveEvent : (event : eventType, newDay : Date) => void
+}
+
+function MonthView({ rows, eventsArr, currentDate, moveEvent } : monthViewType) {
+	return <div className={styles.daysContainer}>
+		{rows.map((a, index) => {
+			return <div key={index} className={styles.days} style={{ minHeight: `${100 / rows.length}%`, maxHeight: `${100 / rows.length}%` }}>
+				{a.map((b) => <Day key={b.dayOfMonth.toString()} day={b.dayOfMonth} events={b.days} moveEvent={moveEvent} />)}
+			</div>
+		})}
+	</div>
 }
 
 function Calendar({ eventsArr = null } : calendarPropsType) {
-	const [currentMonth, setCurrentMonth] = useState(new Date())
+	const [currentDate, setCurrentDate] = useState<Date>(new Date())
+	const [viewMode, setViewMode] = useState<`month` | `week`>(`month`)
 
-	const nowMonth = () => {
-		setCurrentMonth(new Date())
+	const nextPeriod = () => {
+		if (viewMode === `month`) {
+			setCurrentDate(addMonths(currentDate, 1))
+		} else {
+			setCurrentDate(addWeeks(currentDate, 1))
+		}
 	}
 
-	const nextMonth = () => {
-		setCurrentMonth(addMonths(currentMonth, 1))
+	const prevPeriod = () => {
+		if (viewMode === `month`) {
+			setCurrentDate(subMonths(currentDate, 1))
+		} else {
+			setCurrentDate(subWeeks(currentDate, 1))
+		}
 	}
 
-	const prevMonth = () => {
-		setCurrentMonth(subMonths(currentMonth, 1))
+	const toggleViewMode = () => {
+		setViewMode(viewMode === `month` ? `week` : `month`)
+	}
+
+	const nowPeriod = () => {
+		setCurrentDate(new Date())
 	}
 
 	return (
 		<DndProvider backend={HTML5Backend}>
 			<div className={styles.calendar}>
-				<RenderHeader currentMonth={currentMonth} nowMonth={nowMonth} nextMonth={nextMonth} prevMonth={prevMonth}/>
-				<RenderDays currentMonth={currentMonth}/>
-				<RenderCells currentMonth={currentMonth} eventsArr={eventsArr}/>
+				<RenderHeader
+					currentDate={currentDate}
+					nowPeriod={nowPeriod}
+					nextPeriod={nextPeriod}
+					prevPeriod={prevPeriod}
+					toggleViewMode={toggleViewMode}
+					viewMode={viewMode}
+				/>
+				<RenderDays currentMonth={currentDate} viewMode={viewMode}/>
+				<RenderCells currentDate={currentDate} eventsArr={eventsArr} viewMode={viewMode}/>
 			</div>
 		</DndProvider>
 	)

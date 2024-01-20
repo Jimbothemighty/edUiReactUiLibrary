@@ -77,6 +77,34 @@
 	cursor: move;
 }
 
+
+.bold {
+	font-weight: bold;
+}
+
+.weekView {
+	display: grid;
+	grid-template-columns: repeat(8, 1fr); /* 7 days + 1 column for times */
+}
+  
+.dayOfWeekColumn .timeColumn, .dayColumn {
+	display: flex;
+	flex-direction: column;
+	margin-right: 3px;
+}
+
+.dayColumn {
+	background-color: #00000011;
+}
+
+.hourSlot {
+	height: 60px; /* Adjust as per your design */
+	border-bottom: 1px solid #ccc;
+}
+
+
+
+
 /** global to avoid transform on dark mode class */
 :global .dark {
 	.dayInner {
