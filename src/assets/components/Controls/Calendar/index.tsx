@@ -38,7 +38,6 @@ const Hour = ({ day, events, hour, moveEvent }) => {
 		accept: `event`,
 		drop: (item : eventType) => {
 			if (item) {
-				debugger
 				let newDate = setHours(new Date(day), hour)
 				moveEvent(item, newDate)
 			}
