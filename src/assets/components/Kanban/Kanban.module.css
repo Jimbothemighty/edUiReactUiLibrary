@@ -1,0 +1,25 @@
+.board {
+	display: flex;
+	justify-content: center;
+	height: 100%;
+}
+
+.column {
+	margin: 8px;
+	border: 1px solid lightgray;
+	border-radius: 2px;
+	width: 300px;
+}
+
+.columnHeader {
+	padding: 8px;
+}
+
+.card {
+	margin: 8px;
+	padding: 8px;
+	/* border: 1px solid lightgray; */
+	border-radius: 2px;
+	background-color: var(--theme-bg-colour);
+	color: var(--theme-txt-colour);
+}

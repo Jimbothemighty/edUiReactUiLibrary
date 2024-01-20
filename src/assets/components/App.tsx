@@ -18,6 +18,7 @@ import { rootThemeClass, rootThemeColour } from "~/assets/js/setUserPreferences"
 import { setThemeColour, themeColor } from '~/redux/userPreferences'
 import Calendar, { eventType } from "~/assets/components/Controls/Calendar"
 import { addDays } from "date-fns"
+import Kanban from "~/assets/components/Kanban"
 
 export function App() {
 	const theme = useSelector((state: RootState) => state.userPreferences.theme)
@@ -33,8 +34,8 @@ export function App() {
 
 	return <div className="App">
 		<NavBar />
-		<div style={{ padding: `10px` }}>
-			<Tabs>
+		<div style={{ padding: `10px`, flexGrow: `1` }}>
+			<Tabs defaultActiveTabByLabel="Kanban">
 				<Tab label="Theme">
 					<h3>Set Light / Dark Theme</h3>
 					<LightDarkToggle/>
@@ -59,9 +60,35 @@ export function App() {
 				<Tab label="Calendar">
 					<CalendarTest/>
 				</Tab>
+				<Tab label="Kanban">
+					<KanbanTest/>
+				</Tab>
 			</Tabs>
 		</div>
 	</div>
+}
+
+function KanbanTest() {
+	const initialColumns = [
+		{ id: `todo`, title: `To Do` },
+		{ id: `in-progress`, title: `In Progress` },
+		{ id: `in-review`, title: `In Review` },
+		{ id: `done`, title: `Done` },
+	]
+
+	const initialCards = [
+		{ id: 1, content: `Task 1`, status: `todo` },
+		{ id: 2, content: `Task 2`, status: `todo` },
+		{ id: 3, content: `Task 3`, status: `in-progress` },
+		{ id: 4, content: `Task 4`, status: `in-progress` },
+		{ id: 5, content: `Task 5`, status: `in-progress` },
+		{ id: 6, content: `Task 6`, status: `in-progress` },
+		{ id: 7, content: `Task 7`, status: `in-review` },
+		{ id: 8, content: `Task 8`, status: `in-review` },
+		{ id: 9, content: `Task 9`, status: `done` },
+	]
+
+	return <Kanban initialCards={initialCards} initialColumns={initialColumns} />
 }
 
 function ThemeColours() {
