@@ -1,6 +1,6 @@
 import { useState, ReactNode } from 'react'
 import styles from './Calendar.module.css'
-import { format, startOfWeek, addDays, startOfMonth, endOfMonth, endOfWeek, addMonths, subMonths, addWeeks, subWeeks } from 'date-fns'
+import { format, startOfWeek, addDays, startOfMonth, endOfMonth, endOfWeek, addMonths, subMonths, addWeeks, subWeeks, getHours, isSameDay, setHours } from 'date-fns'
 import { useDrag, useDrop, DndProvider } from 'react-dnd'
 import { HTML5Backend } from 'react-dnd-html5-backend'
 import Button from '~/assets/components/Controls/Button'
@@ -31,6 +31,40 @@ export type eventType = {
 
 type calendarPropsType = {
 	eventsArr : eventType[]
+}
+
+const Hour = ({ day, events, hour, moveEvent }) => {
+	const [{ isOver }, drop] = useDrop(() => ({
+		accept: `event`,
+		drop: (item : eventType) => {
+			if (item) {
+				debugger
+				let newDate = setHours(new Date(day), hour)
+				moveEvent(item, newDate)
+			}
+		},
+		collect: (monitor) => ({
+			isOver: monitor.isOver(),
+		}),
+	}))
+
+	return <div ref={drop} className={styles.hourSlot}>
+		<div className={styles.dayEvents}>
+			{events.map((a) => {
+				if (isSameDay(a.dayOfMonth, day)) {
+					return a.days.map((b) => {
+						if (getHours(b.from) === hour) {
+							return <DraggableEvent key={b.id} event={b} moveEvent={moveEvent} />
+						}
+
+						return null
+					})
+				}
+
+				return null
+			})}
+		</div>
+	</div>
 }
 
 const Day = ({ day, events, moveEvent }) => {
@@ -170,14 +204,12 @@ const RenderCells = ({ currentDate, eventsArr, viewMode } : renderCellsType) => 
 		let thisRow : calendarDaysType[] = []
 
 		for (let i = 0; i < 7; i++) {
-			dayOfMonth = addDays(dayOfMonth, 1)
-
-			// days.push(events.filter((a) => format(a.from, `ddMyyyy`) === format(dayOfMonth, `ddMyyyy`)))
-
 			thisRow.push({
 				dayOfMonth,
 				days: events.filter((a) => format(a.from, `ddMyyyy`) === format(dayOfMonth, `ddMyyyy`)),
 			})
+
+			dayOfMonth = addDays(dayOfMonth, 1)
 		}
 
 		rows.push(thisRow)
@@ -187,18 +219,19 @@ const RenderCells = ({ currentDate, eventsArr, viewMode } : renderCellsType) => 
 	}
 
 	if (viewMode === `week`) {
-		return <WeekView rows={rows} currentDate={currentDate}/>
+		return <WeekView row={rows[0]} currentDate={currentDate} moveEvent={moveEvent}/>
 	} else {
 		return <MonthView rows={rows} eventsArr={eventsArr} currentDate={currentDate} moveEvent={moveEvent}/>
 	}
 }
 
 type weekViewType = {
-	rows : calendarDaysType[][],
-	currentDate : Date
+	row : calendarDaysType[],
+	currentDate : Date,
+	moveEvent : (event : eventType, newDay : Date) => void
 }
 
-function WeekView({ rows, currentDate } : weekViewType) {
+function WeekView({ row, currentDate, moveEvent } : weekViewType) {
 	const daysOfWeek = []
 	for (let i = 0; i < 7; i++) {
 		daysOfWeek.push(addDays(startOfWeek(currentDate), i))
@@ -217,13 +250,8 @@ function WeekView({ rows, currentDate } : weekViewType) {
 		{daysOfWeek.map((day) => (
 			<div key={day} className={styles.dayColumn}>
 				{hoursOfDay.map((hour) => {
-					// const eventsInHour = rows.filter(
-					// 	(e) => isSameDay(e.from, day) && getHours(e.from) === hour
-					// )
 					return (
-						<div key={hour} className={styles.hourSlot}>
-							{/* Render eventsInHour here */}
-						</div>
+						<Hour key={hour} day={day} hour={hour} events={row.filter((a) => isSameDay(a.dayOfMonth, day))} moveEvent={moveEvent}/>
 					)
 				})}
 			</div>
