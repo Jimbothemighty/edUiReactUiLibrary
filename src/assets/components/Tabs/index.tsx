@@ -11,12 +11,13 @@ const Tab: React.FC<TabProps> = ({ children }) => <>{children}</>
 
 interface TabsProps {
   children: ReactElement<TabProps>[];
+  defaultActiveTabByLabel?: string;
 }
 
-const Tabs: React.FC<TabsProps> = ({ children }) => {
-	const [activeIndex, setActiveIndex] = useState(0)
+const Tabs: React.FC<TabsProps> = ({ children, defaultActiveTabByLabel }) => {
+	const [activeIndex, setActiveIndex] = useState<string>(defaultActiveTabByLabel || children[0].props.label)
 
-	const handleTabClick = (index: number) => {
+	const handleTabClick = (index: string) => {
 		setActiveIndex(index)
 	}
 
@@ -25,16 +26,16 @@ const Tabs: React.FC<TabsProps> = ({ children }) => {
 			<div className={styles.tabs}>
 				{children.map((tab, index) => (
 					<div
-						key={index}
-						className={`${styles.tab} ${index === activeIndex ? styles.active : ``}`}
-						onClick={() => handleTabClick(index)}
+						key={tab.props.label}
+						className={`${styles.tab} ${tab.props.label === activeIndex ? styles.active : ``}`}
+						onClick={() => handleTabClick(tab.props.label)}
 					>
 						{tab.props.label}
 					</div>
 				))}
 			</div>
 			{children.map((child, index) => {
-				return <div key={index} className={styles.tabContent} style={{ display: index === activeIndex ? `block` : `none` }}>{child}</div> // children[activeIndex]
+				return <div key={index} className={styles.tabContent} style={{ display: child.props.label === activeIndex ? `flex` : `none` }}>{child}</div> // children[activeIndex]
 			})}
 		</div>
 	)
