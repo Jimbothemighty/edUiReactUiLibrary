@@ -15,14 +15,15 @@ export function useIsDarkTheme() {
 export function LightDarkToggle() {
 	const dispatch: AppDispatch = useDispatch()
 	const isDarkMode = useIsDarkTheme()
+	const thisId = Math.random().toString(16).slice(2)
 
 	return <div className={styles.toggleContainer}>
-		<input type="checkbox" className={styles.checkbox} id="checkbox" checked={isDarkMode}
+		<input type="checkbox" className={styles.checkbox} id={thisId} checked={isDarkMode}
 			onChange={(event) => {
 				const { checked } = event.target
 				dispatch(setTheme(checked ? THEME_DARK : THEME_LIGHT))
 			}} />
-		<label htmlFor="checkbox" className={styles.checkboxLabel}>
+		<label htmlFor={thisId} className={styles.checkboxLabel}>
 			<span className={`${styles.emoji} ${styles.left}`}>🌑</span>
 			<span className={`${styles.emoji} ${styles.right}`}>☀️</span>
 			<span className={styles.ball}></span>
